@@ -18,10 +18,11 @@ public class InformationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
 
-        // 이전 액티비티에서 보낸 ID 받기
+        // 1. 실행요청한 인텐트 휙득 >> 정보 획득
         Intent mainIntent = getIntent();
         String id = mainIntent.getStringExtra("id");
 
+        // 2. 각종 입력 취젯 획득
         EditText editTextName = findViewById(R.id.editTextName);
         EditText editTextAge = findViewById(R.id.editTextAge);
         RadioButton radioFemale = findViewById(R.id.radioFemale);
@@ -30,30 +31,37 @@ public class InformationActivity extends AppCompatActivity {
         CheckBox cBSecurity = findViewById(R.id.cBSecurity);
         Button btnSend = findViewById(R.id.btnSend);
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
+
+        // 3. 명령버튼 획득 << 클릭리스너 획득
+        findViewById(R.id.btnSend).setOnClickListener(new View.OnClickListener() {
+            // 3-1. onClick() 획득
+            //      - 인텐트 생성
+
             @Override
             public void onClick(View view) {
-                Intent resultIntent = new Intent(); // 변수명 구분
+                Intent it = new Intent();
+                //      - 인텐트의 입력 정보를 설정 << 전송
+                String name = editTextName.toString();
+                it.putExtra("name", editTextName.getText().toString());
+                it.putExtra("age", editTextAge.getText().toString());
 
-                // [수정] 괄호 오타 해결: (("id", id) -> "id", id
-                resultIntent.putExtra("id", id);
-                resultIntent.putExtra("name", editTextName.getText().toString());
-                resultIntent.putExtra("age", editTextAge.getText().toString());
+                if (radioFemale.isChecked())
+                    it.putExtra("gender", "여자");
+                else
+                    it.putExtra("gender", "남자");
 
-                if (radioFemale.isChecked()) {
-                    resultIntent.putExtra("gender", "여자");
-                } else {
-                    resultIntent.putExtra("gender", "남자");
-                }
 
-                String strLicense = "";
-                if (cBInfo.isChecked())    strLicense += "\n정보처리기사";
-                if (cBAI.isChecked())     strLicense += "\n인공지능데이터전문가";
-                if (cBSecurity.isChecked()) strLicense += "\n정보보안기사";
+                String license = "";
+                if (cBInfo.isChecked())
+                    license += "\n   정보처리기사";
+                if (cBAI.isChecked())
+                    license += "\n   인공지능데이터전문가";
+                if (cBSecurity.isChecked())
+                    license += "\n   정보보안기사";
 
-                resultIntent.putExtra("license", strLicense);
+                it.putExtra("license", license);
 
-                setResult(RESULT_OK, resultIntent);
+                setResult(RESULT_OK, it);
                 finish();
             }
         });

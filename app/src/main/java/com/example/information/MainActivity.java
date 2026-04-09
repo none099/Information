@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    // 0. TestView 찾아서 맴버필드에 저장
     protected void onCreate(Bundle savedInstanceState) {
+        // 1. 명령버튼 획득 클릭 리스너 장착
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btnReq = (Button) findViewById(R.id.btnRequest);
@@ -43,29 +45,32 @@ public class MainActivity extends AppCompatActivity {
         tResult = (TextView) findViewById(R.id.tVResult);
         btnReq.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                // 인텐트 생성 -- 정보를 설정 -- 2번째 엑티비티 실행 요청
                 String id = editTextId.getText().toString();
                 Intent intent = new Intent(getApplicationContext(), InformationActivity.class);
                 intent.putExtra("id", id);
                 resultLauncher.launch(intent);
             }
         });
-        btnEnd.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnEnd).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 finish();
             }
         });
     }
+    // 2. 결과처리 메소드 오버라이딩
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == REQUEST_INFO) && (resultCode == RESULT_OK)) {
-            tVResultLabel.setText("전송\n정보\n출력");
-            String str = "아이디: " + data.getStringExtra("id");
-            str = str + "\n이름: " + data.getStringExtra("name");
-            str = str + "\n나이: " + data.getStringExtra("age");
-            str = str + "\n성별: " + data.getStringExtra("gender");
-            str = str + "\n자격증: " + data.getStringExtra("license");
+        if ((requestCode == 1) && (resultCode == RESULT_OK)) {
+            tVResultLabel.setText("결과\n출력");
+            String str = "아이디:";
+            str += data.getStringExtra("id");
+            str = str + "\n이름:" + data.getStringExtra("name");
+            str = str + "\n나이:" + data.getStringExtra("age");
+            str = str + "\n성별:" + data.getStringExtra("gender");
+            str = str + "\n자격증:" + data.getStringExtra("license");
             tVResult.setText(str);
         }
     }
